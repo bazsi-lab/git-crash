@@ -108,6 +108,142 @@ git remove origin                                       # remove remote alias co
 
 # file / change management
 
+git status                              # current state
+git diff                                # unstaged differencies
+git diff --staged                       # staged differencies
+git add <file>                          # add one file to stage
+git add .                               # add all everything to stage, recursirverly
+git restore <file>                      # discard local unstaged changes, use carefully
+git restore --staged                    # unstage, keep edits
+git rm <file>                           # delete file + stage deletion
+git mv old new                          # rename or move + stage
+git commit --amend                      # edit last commit
+
+
+# helpful history views
+
+git log --oneline --decorate --graph -20        # list last 20 commit with details
+git show <commit>                               #inspect commit
+git blame <file>                                # who changed what lines
+
+# sync / fetching 
+
+git fetch                               # download remote updates
+git fetch --all --prune                 # fetch all remotes, prune deleted branches
+git pull                                # fetch + merge default, or fetch + rebase (if configured)
+
+git show origin/main:path/to/file       # if the remote version of the file needed without switching
+
+# branch management
+
+git branch                              # list local branches
+git branch -a                           # list local and remote branches
+git branch -vv                          # show upstream tracking
+
+# create branch from current heading
+
+git switch -c feature-x                 # create and switch branch
+git checkout -b feature-x               # old style
+
+git switch main                         # switch branch
+git checkout main                       # old style branch switch
+
+# compare branches
+
+git log --oneline --left-rigth --grap main.. feature-x
+git diff main..feature-x                # what differs
+
+# push branch + set upstream
+
+git push -u origin feature-x
+
+# delete branch local or remote
+
+git branch -d feature-x                 # safe delete, only if merged
+git branch -D feature-x                 # force delete local, be carefull
+git push origin --delete feature-x      # delete remote branch
+
+# rename branch
+
+git branch -m oldname newname           # rename local
+git push -u origin newname              # push new name
+git push origin --delete oldname        # delete old remote name
+
+# Merge feature into main (creates merge commit if needed)
+git switch main
+git pull
+git merge feature-x
+git push
+
+# Rebase feature onto main (rewrites history; avoid in shared branches)
+git switch feature-x
+git fetch
+git rebase main
+git switch main
+git merge feature-x                               # often fast-forward after rebase
+git push
+
+# conflict resolution
+
+it status                                        # shows conflicted files
+# open files, resolve markers <<<<<<< ======= >>>>>>>
+git add <resolved-file>                           # mark resolved
+git commit                                        # for merge
+# or if you were cherry-picking:
+git cherry-pick --continue
+# or if you were rebasing:
+git rebase --continue
+
+# If you want to abort:
+git merge --abort
+git cherry-pick --abort
+git rebase --abort
+
+# cherry-pick
+
+git cherry-pick <commit-hash>                     # apply one commit onto current branch
+git cherry-pick <A>..<B>                          # apply a range (excluding A)
+# If conflict:
+git add <file>
+git cherry-pick --continue
+# Or abort:
+git cherry-pick --abort
+
+# tag versions milestones
+
+git tag                         # list tags
+git tag v1.0.0                  # lightweight tag
+git tag -a v1.0.0               # annotated tag
+git tag origin --tags           
+
+# last-change recovery
+
+git reflog                                        # find lost commits (local safety net)
+
+# Undo last commit but keep changes staged/unstaged:
+git reset --soft HEAD~1                           # keep staged
+git reset --mixed HEAD~1                          # keep unstaged (default)
+
+# Hard reset (DANGEROUS: discards local changes)
+git reset --hard HEAD
+
+# Reset local branch to match remote exactly (DANGEROUS)
+git fetch
+git reset --hard origin/main
+
+# Remove untracked files/dirs (DANGEROUS)
+git clean -nfd                                    # preview
+git clean -fd                                     # execute
+
+# diagnostic
+
+git rev-parse --show-toplevel                     # repo root (are you in a repo?)
+git status
+git branch -vv
+git remote -v
+git log --oneline --decorate --graph --all -15
+
+
 
 
 
